@@ -1,6 +1,8 @@
 package chess;
 
 import boardgame.Board;
+import boardgame.Piece;
+import boardgame.Position;
 import chess.pieces.King;
 import chess.pieces.Rook;
 
@@ -25,6 +27,25 @@ public class ChessMatch {
     }
     private void placeNewPiece(char column, int row, ChessPiece piece){
         board.placePiece(piece, new ChessPosition(column, row).toPosition());
+    }
+    public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition){
+        Position source = sourcePosition.toPosition();
+        Position target = targetPosition.toPosition();
+        validateSourcePosition(source);
+        Piece capturedPiece = makeMove(source,target);
+        return (ChessPiece)capturedPiece;
+    }
+
+    private void validateSourcePosition(Position pos){
+        if(!board.thereIsAPiece(pos)){
+            throw new ChessException("There  is no piece on source position");
+        }
+    }
+    private Piece makeMove (Position sourceP, Position targetP){
+        Piece p = board.RemovePiece(sourceP);
+        Piece capturedPiece = board.RemovePiece(targetP);
+        board.placePiece(p, targetP);
+        return capturedPiece;
     }
 
     //metodo responsavel por dar inicio a partida de xadrez

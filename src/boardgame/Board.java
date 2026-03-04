@@ -45,6 +45,24 @@ public class Board {
         pieces[pos.getRows()][pos.getColumns()] = piece;//pega a matriz na pos. dada e atribui a ela a peça que foi informada
         piece.position = pos;
     }
+
+    public Piece RemovePiece(Position pos){
+        if(!posExists(pos)){
+            throw new BoardException("Position not on the board");
+        }
+        if(piece(pos) == null){
+            return null;
+        }
+
+        Piece aux = piece(pos);
+        aux.position = null;
+        pieces[pos.getRows()][pos.getColumns()] = null;
+
+        return aux;
+
+    }
+
+
     //testa se as posições existem
     private boolean posExists(int row, int column){
            return row>=0 && row < rows && column >= 0 && column < columns;
