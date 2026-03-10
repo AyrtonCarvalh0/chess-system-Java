@@ -8,7 +8,7 @@ import chess.pieces.Rook;
 
 public class ChessMatch {
 
-    private Board board;
+    private static Board board;
 
     public ChessMatch(){
         board = new Board(8,8);
@@ -16,7 +16,7 @@ public class ChessMatch {
     }
 
     //função para o sistema ler somente as peças de xadrez, e nao o tabuleiro
-    public ChessPiece[][] getPieces(){
+    public static ChessPiece[][] getPieces(){
         ChessPiece[][] mat = new ChessPiece[board.getRows()][board.getColumns()];
         for(int i=0;i< board.getRows(); i++){
             for (int j=0;j< board.getColumns();j++){
@@ -28,6 +28,13 @@ public class ChessMatch {
     private void placeNewPiece(char column, int row, ChessPiece piece){
         board.placePiece(piece, new ChessPosition(column, row).toPosition());
     }
+
+    public static boolean[][] possibleMoves(ChessPosition sourcePos){
+        Position position = sourcePos.toPosition();
+        validateSourcePosition(position);
+        return board.piece(position).possibleMoves();
+    }
+
     public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition){
         Position source = sourcePosition.toPosition();
         Position target = targetPosition.toPosition();
@@ -37,7 +44,7 @@ public class ChessMatch {
         return (ChessPiece)capturedPiece;
     }
 
-    private void validateSourcePosition(Position pos){
+    private static void validateSourcePosition(Position pos){
         if(!board.thereIsAPiece(pos)){
             throw new ChessException("There  is no piece on source position");
         }
