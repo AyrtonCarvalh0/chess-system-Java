@@ -1,8 +1,12 @@
 package boardgame;
 
+import chess.ChessPiece;
+import chess.Color;
+
 public abstract class Piece {
     protected Position position;
     private Board board;
+    private Color color;
 
     public Piece(Board board) {
         this.board = board;
@@ -27,6 +31,11 @@ public abstract class Piece {
             }
         }
         return false;
+    }
+
+    protected boolean IsThereOpponetPiece(Position pos){
+        ChessPiece p = (ChessPiece) getBoard().piece(pos);
+        return p != null && p.getColor() != color;
     }
 
 }
