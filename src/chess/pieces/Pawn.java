@@ -2,16 +2,22 @@ package chess.pieces;
 
 import boardgame.Board;
 import boardgame.Position;
+import chess.ChessMatch;
 import chess.ChessPiece;
 import chess.Color;
 
 public class Pawn extends ChessPiece {
-    public Pawn(Board board, Color color) {
+
+    private ChessMatch chessMatch;
+
+    public Pawn(Board board, Color color, ChessMatch chessMatch) {
         super(board, color);
+        this.chessMatch = chessMatch;
     }
 
     @Override
     public boolean[][] possibleMoves() {
+
         boolean[][] mat = new boolean[getBoard().getRows()][getBoard().getColumns()];
         Position p = new Position(0, 0);
 
@@ -39,18 +45,25 @@ public class Pawn extends ChessPiece {
             if (getBoard().posExists(p) && IsThereOpponetPiece(p)) {
                 mat[p.getRows()][p.getColumns()] = true;
             }
-        }
 
-
-
-
-        else{
-            p.setValues(position.getRows() +1, position.getColumns());
+            //Speacial move en passant (white)
+            if (position.getRows() == 3) {
+                Position left = new Position(position.getRows(), position.getColumns() - 1);
+                if (getBoard().posExists(left) && IsThereOpponetPiece(left) && getBoard().piece(left) == chessMatch.getEnPassantVulnerable()) {
+                    mat[left.getRows() - 1][left.getColumns()] = true;
+                }
+                Position right = new Position(position.getRows(), position.getColumns() + 1);
+                if (getBoard().posExists(right) && IsThereOpponetPiece(right) && getBoard().piece(right) == chessMatch.getEnPassantVulnerable()) {
+                    mat[right.getRows() - 1][right.getColumns()] = true;
+                }
+            }
+        } else {
+            p.setValues(position.getRows() + 1, position.getColumns());
             if (getBoard().posExists(p) && !getBoard().thereIsAPiece(p)) {
 
                 mat[p.getRows()][p.getColumns()] = true;
             }
-            p.setValues(position.getRows() +2, position.getColumns());
+            p.setValues(position.getRows() + 2, position.getColumns());
             Position p2 = new Position(position.getRows() + 1, position.getColumns());
             if (getBoard().posExists(p) && !getBoard().thereIsAPiece(p) && getBoard().posExists(p2) && !getBoard().thereIsAPiece(p2) && getMoveCount() == 0) {
 
@@ -59,25 +72,38 @@ public class Pawn extends ChessPiece {
 
             }
 
-            p.setValues(position.getRows() +1, position.getColumns() - 1);
+            p.setValues(position.getRows() + 1, position.getColumns() - 1);
             if (getBoard().posExists(p) && IsThereOpponetPiece(p)) {
                 mat[p.getRows()][p.getColumns()] = true;
             }
 
-            p.setValues(position.getRows() +1, position.getColumns() + 1);
+            p.setValues(position.getRows() + 1, position.getColumns() + 1);
             if (getBoard().posExists(p) && IsThereOpponetPiece(p)) {
                 mat[p.getRows()][p.getColumns()] = true;
             }
+
+            //Speacial move en passant (black)
+            if (position.getRows() == 4) {
+                Position left = new Position(position.getRows(), position.getColumns() - 1);
+                if (getBoard().posExists(left) && IsThereOpponetPiece(left) && getBoard().piece(left) == chessMatch.getEnPassantVulnerable()) {
+                    mat[left.getRows() + 1][left.getColumns()] = true;
+                }
+                Position right = new Position(position.getRows(), position.getColumns() + 1);
+                if (getBoard().posExists(right) && IsThereOpponetPiece(right) && getBoard().piece(right) == chessMatch.getEnPassantVulnerable()) {
+                    mat[right.getRows() + 1][right.getColumns()] = true;
+                }
+
+            }
+
 
         }
+        return mat;
+        }
 
-            return mat;
+        @Override
+        public String toString () {
+            return "P";
 
-
-
+        }
     }
-    @Override
-    public String toString(){
-        return "P";
-    }
-}
+
